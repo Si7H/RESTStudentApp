@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,6 @@ import java.util.stream.Collectors;
 public class StudentController {
 
     private final StudentService studentService;
-
-//    @Value("${app.name:Default app name}")
-//    private String appName;
 
     @GetMapping("/")
     public List<StudentResponse> getAllStudents() {
@@ -45,6 +43,19 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public String deleteStudent(@PathVariable long id) {
         return studentService.deleteStudent(id);
+    }
+
+    @GetMapping("/{firstName}")
+    public List<StudentResponse> getByFirstName(@PathVariable String firstName) {
+        List<Student> students = studentService.getByFirstName(firstName);
+        List<StudentResponse> studentResponses = students.stream().map(StudentResponse::new).collect(Collectors.toList());
+        return studentResponses;
+    }
+
+    @GetMapping("/{firstName}/{lastName}")
+    public StudentResponse getByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        Student student = studentService.getByFirstNameAndLastName(firstName, lastName);
+        return new StudentResponse(student);
     }
 
 }
